@@ -1,4 +1,4 @@
-module daoduc.org/lib
+module github.com/tinhminhtue/go-reused-lib
 
 go 1.13
 
