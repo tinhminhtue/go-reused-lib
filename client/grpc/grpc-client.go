@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"time"
 
-	pb "daoduc.org/lib/nats/proto"
 	"github.com/grpc-ecosystem/grpc-opentracing/go/otgrpc"
 	"github.com/opentracing/opentracing-go"
 	log "github.com/sirupsen/logrus"
+	pb "github.com/tinhminhtue/go-reused-lib/nats/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/connectivity"
 	"google.golang.org/grpc/credentials/insecure"
