@@ -9,7 +9,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-opentracing/go/otgrpc"
 	"github.com/opentracing/opentracing-go"
 	log "github.com/sirupsen/logrus"
-	pb "github.com/tinhminhtue/go-reused-lib/nats/proto"
+	proxy "github.com/tinhminhtue/go-reused-lib/nats/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/connectivity"
 	"google.golang.org/grpc/credentials/insecure"
@@ -20,11 +20,11 @@ const defaultTimeOutLimit = 5 // second
 
 var conn *grpc.ClientConn
 var grpcServerAddr string
-var client pb.ProxyLocalClient
+var client proxy.ProxyLocalClient
 var openTracer opentracing.Tracer
 
 // Call once when start, should exit program if return nil or retry..
-func InitExternalClient(addr string, tracer opentracing.Tracer) pb.ProxyLocalClient {
+func InitExternalClient(addr string, tracer opentracing.Tracer) proxy.ProxyLocalClient {
 	// Open tracing
 	openTracer = tracer
 	grpcServerAddr = addr
@@ -37,7 +37,7 @@ func InitExternalClient(addr string, tracer opentracing.Tracer) pb.ProxyLocalCli
 		log.Fatalf("did not connect: %v", err)
 		return nil
 	}
-	client = pb.NewProxyLocalClient(conn)
+	client = proxy.NewProxyLocalClient(conn)
 	return client
 }
 
@@ -47,7 +47,7 @@ func CloseConn() {
 	}
 }
 
-func getClient() pb.ProxyLocalClient {
+func getClient() proxy.ProxyLocalClient {
 	if conn == nil {
 		log.Errorln("Grpc connection is nil, retrying to create connection")
 
@@ -56,7 +56,7 @@ func getClient() pb.ProxyLocalClient {
 			log.Errorln("Retry but fail to connect: ", grpcServerAddr)
 			return nil
 		} else {
-			c := pb.NewProxyLocalClient(conn)
+			c := proxy.NewProxyLocalClient(conn)
 			return c
 		}
 	} else {
@@ -69,7 +69,7 @@ func getClient() pb.ProxyLocalClient {
 			return getClient()
 		}
 		if client == nil {
-			client = pb.NewProxyLocalClient(conn)
+			client = proxy.NewProxyLocalClient(conn)
 		}
 		return client
 
@@ -88,7 +88,7 @@ func ExternalRequestBytes(uri string, bytes []byte) ([]byte, error) {
 	md := metadata.New(map[string]string{"x-subject": uri})
 	ctx = metadata.NewOutgoingContext(ctx, md)
 
-	r, err := c.ProxyNats(ctx, &pb.ProxyRequest{Data: bytes})
+	r, err := c.ProxyNats(ctx, &proxy.ProxyRequest{Data: bytes})
 	if err != nil {
 		return nil, err
 	}
