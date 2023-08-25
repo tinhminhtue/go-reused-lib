@@ -4,14 +4,16 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/ory/viper"
 	log "github.com/sirupsen/logrus"
+	"github.com/tinhminhtue/go-reused-lib/logt"
 	proxy "github.com/tinhminhtue/go-reused-lib/nats/proto"
 	"github.com/tinhminhtue/go-reused-lib/otelc"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/connectivity"
 	"google.golang.org/grpc/credentials/insecure"
@@ -83,20 +85,33 @@ func ExternalRequestBytes(ctx context.Context, uri string, bytes []byte) ([]byte
 		return nil, fmt.Errorf("proxy client is nil")
 	}
 	// Contact the server and print out its response.
-	ctx, cancel := context.WithTimeout(ctx, defaultTimeOutLimit*time.Second)
-	defer cancel()
+	// ctx, cancel := context.WithTimeout(ctx, defaultTimeOutLimit*time.Second)
+	// defer cancel()
 	md := metadata.New(map[string]string{"x-subject": uri})
 
 	// Mark child force otel if this key exist
-	if _, ok := ctx.Value(otelc.ForceSampleKey).(struct{}); ok {
-		md.Set("otelc", "force")
+
+	var span trace.Span
+	ctx, span = otel.Tracer(viper.GetString("service.name")).Start(ctx, "ExternalRequestBytes")
+	logt.Info(span, "TraceID: ", span.SpanContext().TraceID().String(), "; SpanID: ", span.SpanContext().SpanID().String())
+	isForced := false
+	if forceSampleMeta, ok := ctx.Value(otelc.ForceSampleKey).(otelc.ForceSampleMeta); ok {
+		isForced = true
+		span.SetAttributes(attribute.String("previousErr", forceSampleMeta.PreviousErr))
 	}
+	span.SetAttributes(attribute.Bool("isForced", isForced))
+	// add event (as log)
+	logt.Info(span, "Acquiring lock")
+
+	// API for status Error
+	// span.SetStatus(codes.Error, "operationThatCouldFail failed")
+	// RecordError
+	// span.RecordError(err)
+	defer span.End()
+	// send force tracing to child service (manual isn't need when using auto instrument lib)
+	// md.Set("otelc", span.SpanContext().TraceID().String(), span.SpanContext().SpanID().String())
 
 	ctx = metadata.NewOutgoingContext(ctx, md)
-
-	log.Info("Test open telemetry")
-	ctx, span := otel.Tracer(viper.GetString("service.name")).Start(ctx, "ExternalRequestBytes")
-	defer span.End()
 
 	r, err := c.ProxyNats(ctx, &proxy.ProxyRequest{Data: bytes})
 	if err != nil {

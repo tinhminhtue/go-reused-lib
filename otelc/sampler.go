@@ -12,6 +12,10 @@ type key int
 
 const ForceSampleKey key = iota
 
+type ForceSampleMeta struct {
+	PreviousErr string
+}
+
 type sampler struct {
 	delegate trace.Sampler
 }
@@ -21,7 +25,7 @@ func NewCustomSampler(delegate trace.Sampler) trace.Sampler {
 }
 
 func (s *sampler) ShouldSample(p trace.SamplingParameters) trace.SamplingResult {
-	if _, ok := p.ParentContext.Value(ForceSampleKey).(struct{}); ok {
+	if _, ok := p.ParentContext.Value(ForceSampleKey).(ForceSampleMeta); ok {
 		return trace.SamplingResult{
 			Decision:   trace.RecordAndSample,
 			Attributes: []attribute.KeyValue{},
