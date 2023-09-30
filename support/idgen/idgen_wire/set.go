@@ -2,7 +2,7 @@ package idgenwire
 
 import (
 	"github.com/google/wire"
-	"github.com/tinhminhtue/go-reused-lib/supports/idgen"
+	"github.com/tinhminhtue/go-reused-lib/support/idgen"
 )
 
 var IdGenSet = wire.NewSet(

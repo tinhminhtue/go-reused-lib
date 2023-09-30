@@ -3,8 +3,8 @@ package tempo
 import (
 	"errors"
 
-	"github.com/tinhminhtue/go-reused-lib/supports/idgen"
-	idgenwire "github.com/tinhminhtue/go-reused-lib/supports/idgen/idgen_wire"
+	"github.com/tinhminhtue/go-reused-lib/support/idgen"
+	idgenwire "github.com/tinhminhtue/go-reused-lib/support/idgen/idgen_wire"
 	"go.temporal.io/sdk/workflow"
 )
 

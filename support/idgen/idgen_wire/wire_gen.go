@@ -7,7 +7,7 @@
 package idgenwire
 
 import (
-	"github.com/tinhminhtue/go-reused-lib/supports/idgen"
+	"github.com/tinhminhtue/go-reused-lib/support/idgen"
 )
 
 // Injectors from wire.go:
