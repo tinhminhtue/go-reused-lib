@@ -16,7 +16,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             v3.17.3
-// source: nats/proto/proxy.proto
+// source: core/nats/proto/proxy.proto
 
 package proxy
 
@@ -121,5 +121,5 @@ var ProxyLocal_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "nats/proto/proxy.proto",
+	Metadata: "core/nats/proto/proxy.proto",
 }

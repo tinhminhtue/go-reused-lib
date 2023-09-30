@@ -14,7 +14,7 @@
 
 syntax = "proto3";
 
-option go_package = "github.com/tinhminhtue/go-reused-lib/nats/proxy";
+option go_package = "github.com/tinhminhtue/go-reused-lib/core/nats/proxy";
 option java_multiple_files = true;
 option java_package = "org.daoduc.lib.nats.proxy"; // java is not used now
 option java_outer_classname = "Proxy";

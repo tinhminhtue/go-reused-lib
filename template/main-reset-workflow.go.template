@@ -1,0 +1,68 @@
+package main
+
+import (
+	"context"
+	"log"
+
+	"github.com/pborman/uuid"
+	"github.com/spf13/viper"
+	"go.temporal.io/api/common/v1"
+	"go.temporal.io/api/workflowservice/v1"
+	"go.temporal.io/sdk/client"
+	"yedda.io/yedda_temporal_chat/config"
+	cm "github.com/tinhminhtue/go-reused-lib/common"
+)
+
+func main() {
+	config.GetSecretConf()
+
+	namespace := viper.GetString(cm.EnvTempoNamespace)
+	hostPort := viper.GetString(cm.EnvTempoHostPort)
+
+	// The client is a heavyweight object that should be created once per process.
+	c, err := client.Dial(client.Options{
+		HostPort:  hostPort,
+		Namespace: namespace,
+	})
+	if err != nil {
+		log.Fatalln("Unable to create client", err)
+	}
+	defer c.Close()
+
+	// log.Println("Started workflow", "WorkflowID", we.GetID(), "RunID", we.GetRunID())
+
+	taskQueueName := viper.GetString(cm.EnvTempoTaskQueueName)
+
+	// // For later using
+	// attributes := map[string]interface{}{
+	// 	// "Invoker": "Source (service) name", // example
+	// }
+
+	//  1. WorkflowExecutionStarted
+	//  2. WorkflowTaskScheduled
+	//  3. WorkflowExecutionSignaled
+	//  4. WorkflowTaskStarted
+	//  5. WorkflowTaskCompleted
+
+	resetRequest := workflowservice.ResetWorkflowExecutionRequest{
+		Namespace: namespace,
+		WorkflowExecution: &common.WorkflowExecution{
+			WorkflowId: "chat_default_30b30dea-cd9a-4e37-bcb7-259a7704864b",
+			RunId:      "",
+		},
+		Reason:                    "Try reset",
+		WorkflowTaskFinishEventId: 3, // reset only start from WorkflowExecutionSignaled
+		RequestId:                 taskQueueName + "_reset_" + uuid.New(),
+		ResetReapplyType:          0,
+	}
+
+	// Reset workflow execution example
+	resp, err := c.ResetWorkflowExecution(context.Background(), &resetRequest)
+
+	// _, err = c.ExecuteWorkflow(context.Background(), workflowOptions, workflows.SendChatWorkflow_v1, jobInput)
+	if err != nil {
+		log.Fatalln("Unable to execute workflow: ", resp)
+	}
+
+	log.Println("DONE")
+}

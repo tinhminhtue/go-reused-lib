@@ -5,11 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/ory/viper"
 	log "github.com/sirupsen/logrus"
-	"github.com/tinhminhtue/go-reused-lib/logt"
-	proxy "github.com/tinhminhtue/go-reused-lib/nats/proto"
-	"github.com/tinhminhtue/go-reused-lib/otelc"
+	"github.com/spf13/viper"
+	"github.com/tinhminhtue/go-reused-lib/core/ct"
+	"github.com/tinhminhtue/go-reused-lib/core/logt"
+	proxy "github.com/tinhminhtue/go-reused-lib/core/nats/proto"
+	"github.com/tinhminhtue/go-reused-lib/core/otelc"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
@@ -87,7 +88,12 @@ func ExternalRequestBytes(ctx context.Context, uri string, bytes []byte) ([]byte
 	// Contact the server and print out its response.
 	// ctx, cancel := context.WithTimeout(ctx, defaultTimeOutLimit*time.Second)
 	// defer cancel()
-	md := metadata.New(map[string]string{"x-subject": uri})
+	ver := "v1"
+	ctxVerVal := ctx.Value(ct.CtxVerKey)
+	if ctxVerVal != nil {
+		ver = ctxVerVal.(string)
+	}
+	md := metadata.New(map[string]string{"x-subject": uri, "x-version": ver})
 
 	// Mark child force otel if this key exist
 
