@@ -5,18 +5,20 @@ import "errors"
 // / You can change the field inside structs. It got default value when older version is used.
 
 type (
-	Contact struct {
-		BaseModel
-		Tenant   string `json:"tenant"`
-		DataType string `json:"dataType"`
+	ContactIO struct {
+		UserId       int64          `json:"userId"`
+		UserIdTarget int64          `json:"userIdTarget"`
+		Status       int8           `json:"status"`
+		IntroRequest map[string]any `json:"introRequest"`
+		IntroReply   map[string]any `json:"introReply"`
 	}
 
 	CreateContactActInput struct {
-		Entity Contact `json:"entity"`
+		Entity ContactIO `json:"entity"`
 	}
 
 	CreateContactFlowInput struct {
-		Entity Contact `json:"entity"`
+		Entity ContactIO `json:"entity"`
 	}
 
 	// CreateContactOutput contains the result for this sample
@@ -38,7 +40,7 @@ func (flowInput *CreateContactFlowInput) CheckValid() error {
 	// return nil
 }
 
-func (input *Contact) CheckValid() error {
+func (input *ContactIO) CheckValid() error {
 	if input.Tenant == "" {
 		return errors.New("meta.tenant is empty")
 	}
