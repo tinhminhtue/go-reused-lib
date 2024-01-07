@@ -11,3 +11,14 @@ type GenericResponse[E any] struct {
 	Data E      `json:"data"`
 	Err  string `json:"err"`
 }
+
+type IdEntity = uint64
+type StrEntity = string
+
+type IdData struct {
+	ID IdEntity `json:"id"`
+}
+
+type HasAuthenticated interface {
+	BuildAuthUri() string
+}

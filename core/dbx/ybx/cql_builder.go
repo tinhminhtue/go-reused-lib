@@ -25,6 +25,11 @@ func AnysToStrings(anys []any) (strings []string, err error) {
 			if err != nil {
 				return strings, err
 			}
+			// check if bytes is null value
+			if string(bytes) == "null" {
+				strings = append(strings, "'{}'") // append empty json object
+				continue
+			}
 			strings = append(strings, string(bytes))
 		}
 

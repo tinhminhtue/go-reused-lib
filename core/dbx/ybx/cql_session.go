@@ -19,15 +19,19 @@ var (
 	once       sync.Once
 )
 
+func (s *CqlSession) GetClusterConfig() dbcfg.DBConfig {
+	return s.clusterConfig
+}
+
+func (s *CqlSession) GetSession() *gocql.Session {
+	return s.session
+}
+
 func GetCqlSession() *CqlSession {
 	once.Do(func() {
 		cqlSession = &CqlSession{}
 	})
 	return cqlSession
-}
-
-func GetSession() *gocql.Session {
-	return GetCqlSession().session
 }
 
 // InitSession init session
