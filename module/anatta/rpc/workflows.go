@@ -2,8 +2,8 @@ package rpc
 
 import (
 	"github.com/pborman/uuid"
-	defined "github.com/tinhminhtue/go-reused-lib/module/time_machine/defined"
-	"github.com/tinhminhtue/go-reused-lib/module/time_machine/inout"
+	defined "github.com/tinhminhtue/go-reused-lib/module/anatta/defined"
+	"github.com/tinhminhtue/go-reused-lib/module/anatta/inout"
 	"go.temporal.io/sdk/workflow"
 )
 
