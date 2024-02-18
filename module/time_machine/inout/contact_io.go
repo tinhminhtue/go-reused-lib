@@ -35,6 +35,11 @@ type (
 	}
 )
 
+// Implement IReply interface
+func (output *CreateContactFlowOutput) GetErr() string {
+	return output.Err
+}
+
 func (flowInput *CreateContactFlowInput) CheckValid() error {
 	// To check check flow input here, return true if valid
 	return flowInput.Entity.CheckValid()
@@ -47,28 +52,18 @@ func (input *ContactIO) CheckValid() error {
 
 // CreateContactFlowInput HasAuthenticated interface
 func (input *CreateContactFlowInput) BuildAuthUri() string {
-	// this is sub uri parse from entity, example: contact/1234 with action is "edit"
-	// for create, it should be empty
+	// this is sub uri parse from entity, example: contact/id_1234 with action in header is "edit"
+	// for create, it should be empty because it's new entity
+	// for edit or delete, it should be "id_1234". "contact" is the path of this api
 	return ""
 }
 
-// Typical APIs request and response
+// Deprecated: use CreateContactFlowInput instead, the request response moved to flow input output named.
 type (
-	ListContactRequest struct {
-		Filter struct {
-			Tenant   string `json:"tenant"`
-			DataType string `json:"dataType"`
-		} `json:"filter"`
-	}
-
-	CreateContactRequest struct {
-		Entity ContactIO `json:"entity"`
-	}
-
-	CreateContactResponse struct {
-		Data struct {
-			ID uint64 `json:"id"`
-		} `json:"data"`
-		Err string `json:"err"`
-	}
+//	ListContactRequest struct {
+//		Filter struct {
+//			Tenant   string `json:"tenant"`
+//			DataType string `json:"dataType"`
+//		} `json:"filter"`
+//	}
 )

@@ -22,3 +22,7 @@ type IdData struct {
 type HasAuthenticated interface {
 	BuildAuthUri() string
 }
+
+type IReply interface {
+	GetErr() string
+}
