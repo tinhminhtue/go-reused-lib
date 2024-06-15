@@ -1,7 +1,6 @@
 package ybx
 
 import (
-	"log"
 	"sync"
 
 	"github.com/tinhminhtue/go-reused-lib/core/dbx/dbcfg"
@@ -50,7 +49,8 @@ func (s *CqlSession) InitSession(dbCf dbcfg.DBConfig) error {
 	cluster.Consistency = dbCf.ConvertConsistencyStringToCqlConsistency()
 	session, err := cluster.CreateSession()
 	if err != nil {
-		log.Fatal(err)
+		// log.Fatal(err)
+		return err
 	}
 	s.session = session
 	return nil

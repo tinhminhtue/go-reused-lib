@@ -142,3 +142,7 @@ func SendExternalRequest[T any](ctx context.Context, subject string, model any) 
 	}
 	return resp, nil
 }
+
+func SendExternalRequestBytes(ctx context.Context, subject string, bytes []byte) ([]byte, error) {
+	return ExternalRequestBytes(ctx, subject, bytes)
+}

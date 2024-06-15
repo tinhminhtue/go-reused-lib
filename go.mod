@@ -62,6 +62,7 @@ require (
 require (
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/wire v0.5.0
+	github.com/nats-io/jwt v1.2.2
 	github.com/nats-io/nats-server/v2 v2.9.17 // indirect
 	github.com/nats-io/nkeys v0.4.5 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect

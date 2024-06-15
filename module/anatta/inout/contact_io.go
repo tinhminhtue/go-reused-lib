@@ -17,26 +17,51 @@ type (
 		Params Params    `json:"params"`
 	}
 
-	CreateContactFlowInput struct {
-		Entity ContactIO `json:"entity"`
-		Params Params    `json:"params"`
-	}
-
 	// CreateContactActOutput contains the result for this sample
 	CreateContactActOutput struct {
 		Data IdData `json:"data"`
 		Err  string `json:"err"`
 	}
 
+	CreateContactFlowInput struct {
+		CreateContactActInput
+	}
+
 	// For simple case, output data of activity and workflow can be the same
 	CreateContactFlowOutput struct {
-		Data IdData `json:"data"`
-		Err  string `json:"err"`
+		CreateContactActOutput
+	}
+)
+
+type (
+	ListContactActInput struct {
+		Entity ContactIO `json:"entity"`
+		Params Params    `json:"params"`
+	}
+
+	// ListContactActOutput contains the result for this sample
+	ListContactActOutput struct {
+		Data []ContactIO `json:"data"`
+		Err  string      `json:"err"`
+	}
+
+	// For simple case, output data of activity and workflow can be the same
+	ListContactFlowInput struct {
+		ListContactActInput
+	}
+
+	ListContactFlowOutput struct {
+		ListContactActOutput
 	}
 )
 
 // Implement IReply interface
 func (output *CreateContactFlowOutput) GetErr() string {
+	return output.Err
+}
+
+// Implement IReply interface
+func (output *ListContactFlowOutput) GetErr() string {
 	return output.Err
 }
 
@@ -57,13 +82,3 @@ func (input *CreateContactFlowInput) BuildAuthUri() string {
 	// for edit or delete, it should be "id_1234". "contact" is the path of this api
 	return ""
 }
-
-// Deprecated: use CreateContactFlowInput instead, the request response moved to flow input output named.
-type (
-//	ListContactRequest struct {
-//		Filter struct {
-//			Tenant   string `json:"tenant"`
-//			DataType string `json:"dataType"`
-//		} `json:"filter"`
-//	}
-)
