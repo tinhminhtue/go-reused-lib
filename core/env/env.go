@@ -3,6 +3,7 @@ package env
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/spf13/viper"
 	"github.com/tinhminhtue/go-reused-lib/core/defined"
@@ -23,6 +24,7 @@ func LoadEnv() {
 		panic(fmt.Errorf("fatal error config file: %w", err))
 	}
 
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_")) // Handle nested keys
 	viper.AutomaticEnv()
 	if os.Getenv("DEBUG") != "" {
 		viper.Debug()
